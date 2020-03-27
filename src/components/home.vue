@@ -29,7 +29,7 @@
             </template>
             <!-- 二级菜单 -->
             <el-menu-item
-              :index="subItem.path"
+              :index="'/'+subItem.path"
               v-for="subItem in item.children"
               :key="subItem._id"
               @click="saveNavState(subItem.path)"
@@ -44,7 +44,7 @@
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main>
+      <el-main class="main">
         <router-view></router-view>
       </el-main>
     </el-container>
@@ -132,5 +132,11 @@ export default {
   text-align: center;
   letter-spacing: 0.2em;
   cursor: pointer;
+}
+.main{
+  height: 690px;
+}
+.el-submenu span{
+    font-size: 13px;
 }
 </style>
