@@ -60,8 +60,8 @@ export default {
         '5e71d72f993f6246d8147c27': 'iconfont icon-user',
         '5e72e81b9e064435c4a7c5cd': 'iconfont icon-tijikongjian',
         '5e79e56f180d5719dc01d297': 'iconfont icon-shangpin',
-        102: 'iconfont icon-danju',
-        145: 'iconfont icon-baobiao'
+        '5e7df2e29730a725e48324d4': 'iconfont icon-danju',
+        '5e7f4816176df706a4bc85f4': 'iconfont icon-baobiao'
       },
       isCollapse: false,
       activePath: ''

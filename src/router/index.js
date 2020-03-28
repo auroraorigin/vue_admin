@@ -8,7 +8,6 @@ import admins from '../components/admins/admins.vue'
 import rights from '../components/power/rights.vue'
 import roles from '../components/power/roles.vue'
 import cate from '../components/goods/cate.vue'
-import params from '../components/goods/params.vue'
 import goodsList from '../components/goods/list.vue'
 import add from '../components/goods/add.vue'
 import order from '../components/order/order.vue'
@@ -44,10 +43,6 @@ const routes = [{
   }, {
     path: '/categories',
     component: cate
-  },
-  {
-    path: '/params',
-    component: params
   },
   {
     path: '/goods',

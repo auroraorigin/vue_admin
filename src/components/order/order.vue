@@ -11,32 +11,92 @@
     <el-card>
       <el-row>
         <el-col :span="8">
-          <el-input placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-input placeholder="请输入订单编号" v-model="queryInfo.query" clearable @clear="getOrderList()">
+            <el-button slot="append" icon="el-icon-search" @click="getOrderList()"></el-button>
           </el-input>
         </el-col>
       </el-row>
 
       <!-- 订单列表数据 -->
       <el-table :data="orderlist" border stripe>
-        <el-table-column label="#" type="index"></el-table-column>
-        <el-table-column label="订单编号" prop="order_number"></el-table-column>
-        <el-table-column label="订单价格" prop="order_price"></el-table-column>
-        <el-table-column label="订单价格" prop="order_price"></el-table-column>
-        <el-table-column label="是否付款" prop="pay_status">
-          <template slot-scope="scope">
-            <el-tag type="success" v-if="scope.row.pay_statis==='1'">已付款</el-tag>
-            <el-tag type="danger" v-else>未付款</el-tag>
+        <el-table-column type="expand">
+          <template v-slot="scope">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="收货人">
+                <span>{{ scope.row.address.consignee}}</span>
+              </el-form-item>
+              <el-form-item label="手机号码">
+                <span>{{ scope.row.address.mobile}}</span>
+              </el-form-item>
+              <el-form-item label="省市区/县">
+                <span>{{ scope.row.address.region_name}}</span>
+              </el-form-item>
+              <el-form-item label="详细地址">
+                <span>{{ scope.row.address.detail_address}}</span>
+              </el-form-item>
+              <el-form-item label="快递编号">
+                <span v-if="scope.row.expressNumber">{{ scope.row.expressNumber}}</span>
+                <span v-else>无</span>
+              </el-form-item>
+              <el-form-item label="总运费">
+                <span>¥ {{ scope.row.freight}}</span>
+              </el-form-item>
+              <el-form-item label="优惠券">
+                <span v-if="scope.row.coupon">¥ {{scope.row.coupon}}</span>
+                <span v-else>无</span>
+              </el-form-item>
+            </el-form>
+
+            <el-table :data="scope.row.goods" border stripe>
+              <el-table-column label="#" type="index"></el-table-column>
+              <el-table-column label="商品名称" prop="name"></el-table-column>
+              <el-table-column label="规格属性" prop="specifiation"></el-table-column>
+              <el-table-column label="数量" prop="buyNumber"></el-table-column>
+              <el-table-column label="单价" prop="price"></el-table-column>
+              <el-table-column label="运费" prop="freight"></el-table-column>
+            </el-table>
           </template>
         </el-table-column>
-        <el-table-column label="是否发货" prop="is_send"></el-table-column>
-        <el-table-column label="下单时间" prop="create_time">
-          <template slot-scope="scope">{{scope.row.create_time|dateFormat}}</template>
+
+        <el-table-column label="#" type="index"></el-table-column>
+        <el-table-column label="订单编号" prop="_id"></el-table-column>
+        <el-table-column label="价格(元)" prop="totalPrice"></el-table-column>
+        <el-table-column label="状态">
+          <template v-slot="scope">
+            <el-tag v-if="scope.row.state=='待付款'">待付款</el-tag>
+            <el-tag type="warning" v-else-if="scope.row.state=='待发货'">待发货</el-tag>
+            <el-tag v-else-if="scope.row.state=='待收货'">待收货</el-tag>
+            <el-tag type="success" v-else-if="scope.row.state=='交易成功'">交易成功</el-tag>
+            <el-tag type="danger" v-else-if="scope.row.state=='退款中'">退款中</el-tag>
+            <el-tag type="info" v-else-if="scope.row.state=='交易关闭'">交易关闭</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" prop="creatDate"></el-table-column>
+        <el-table-column label="更新订单状态">
+          <template v-slot="scope">
+            <el-button
+              size="mini"
+              type="warning"
+              v-if="scope.row.state=='待发货'"
+              @click="showSend(scope.row._id)"
+            >发货</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              v-else-if="scope.row.state=='退款中'"
+              @click="shutDown(scope.row._id)"
+            >关闭订单</el-button>
+          </template>
         </el-table-column>
         <el-table-column label="操作">
-          <template>
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showBox"></el-button>
-            <el-button type="success" icon="el-icon-location" size="mini" @click="showProgressBox"></el-button>
+          <template v-slot="scope">
+            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showBox(scope.row)"></el-button>
+            <el-button
+              type="warning"
+              icon="el-icon-location"
+              size="mini"
+              @click="showProgressBox(scope.row)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,24 +112,51 @@
       ></el-pagination>
     </el-card>
 
-    <!-- 修改地址对话框 -->
-    <el-dialog title="修改地址" :visible.sync="addressVisible" width="50%" @close="addressDialogClosed">
+    <!-- 发货对话框 -->
+    <el-dialog title="发货" :visible.sync="sendVisible" width="50%" @close="sendDialogClosed">
+      <el-form :model="sendForm" :rules="sendFormRules" ref="sendFormRef" label-width="100px">
+        <el-form-item label="快递编号" prop="expressNumber">
+          <el-input v-model="sendForm.expressNumber"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="sendVisible = false">取消</el-button>
+        <el-button type="primary" @click="sendGoods">确认发货</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 修改订单信息对话框 -->
+    <el-dialog
+      title="修改订单信息"
+      :visible.sync="addressVisible"
+      width="50%"
+      @close="addressDialogClosed"
+    >
       <el-form
         :model="addressForm"
         :rules="addressFormRules"
         ref="addressFormRef"
         label-width="100px"
       >
-        <el-form-item label="省市区/县" prop="address1">
-          <el-cascader :options="cityData" v-model="addressForm.address1"></el-cascader>
+        <el-form-item label="收货人" prop="consignee">
+          <el-input v-model="addressForm.consignee"></el-input>
         </el-form-item>
-        <el-form-item label="详细地址" prop="address2">
-          <el-input v-model="addressForm.address2"></el-input>
+        <el-form-item label="手机号码" prop="mobile">
+          <el-input v-model="addressForm.mobile"></el-input>
+        </el-form-item>
+        <el-form-item label="省市区/县" prop="region_name">
+          <el-input v-model="addressForm.region_name"></el-input>
+        </el-form-item>
+        <el-form-item label="详细地址" prop="detail_address">
+          <el-input v-model="addressForm.detail_address"></el-input>
+        </el-form-item>
+        <el-form-item label="快递编号" prop="expressNumber">
+          <el-input v-model="addressForm.expressNumber"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addressVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addressVisible = false">确 定</el-button>
+        <el-button type="primary" @click="editAddress">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -87,10 +174,17 @@
 </template>
 
 <script>
-import cityData from './citydata.js'
-
 export default {
   data () {
+    var checkMobile = (rule, value, cb) => {
+      const regMobile = /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+
+      if (regMobile.test(value)) {
+        return cb()
+      }
+      cb(new Error('请输入合法的手机号'))
+    }
+
     return {
       queryInfo: {
         query: '',
@@ -101,20 +195,43 @@ export default {
       orderlist: [],
       addressVisible: false,
       addressForm: {
-        address1: [],
-        address2: ''
+        consignee: '',
+        detail_address: '',
+        mobile: '',
+        region_name: '',
+        expressNumber: ''
       },
       addressFormRules: {
-        address1: [
-          { required: true, message: '请选择省市区县', trigger: 'blur' }
+        consignee: [
+          { required: true, message: '请输入收货人姓名', trigger: 'blur' }
         ],
-        address2: [
+        detail_address: [
           { required: true, message: '请输入详细地址', trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
+          {
+            validator: checkMobile,
+            trigger: 'blur'
+          }
+        ],
+        region_name: [
+          { required: true, message: '请输入省市区/县', trigger: 'blur' }
+        ],
+        expressNumber: [
+          { required: true, message: '请输入快递编号', trigger: 'blur' }
         ]
       },
-      cityData,
       progressVisible: false,
-      progressInfo: []
+      progressInfo: [],
+      sendVisible: false,
+      sendForm: { expressNumber: '' },
+      sendFormRules: {
+        expressNumber: [
+          { required: true, message: '请输入快递编号', trigger: 'blur' }
+        ]
+      },
+      current_id: ''
     }
   },
   created () {
@@ -128,10 +245,8 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error(res.meta.msg)
       }
-      this.$message.success(res.meta.msg)
-      console.log(res.data)
-      this.total = res.data.total
-      this.orderlist = res.data.goods
+      this.total = res.data.totalpage
+      this.orderlist = res.data.data
     },
     handleSizeChange (newSize) {
       this.queryInfo.pagesize = newSize
@@ -141,24 +256,90 @@ export default {
       this.queryInfo.pagenum = newPage
       this.getOrderList()
     },
-    showBox () {
+    showBox (info) {
+      this.addressForm.consignee = info.address.consignee
+      this.addressForm.mobile = info.address.mobile
+      this.addressForm.region_name = info.address.region_name
+      this.addressForm.detail_address = info.address.detail_address
+      this.addressForm.expressNumber = info.expressNumber
+      this.current_id = info._id
       this.addressVisible = true
     },
     addressDialogClosed () {
       this.$refs.addressFormRef.resetFields()
     },
-    async showProgressBox () {
-      const { data: res } = await this.$http.get('/kuaidi/804909574412544580')
+    async showProgressBox (info) {
+      const { data: res } = await this.$http.get(
+        `orders/${info.expressNumber}/kuaidi`
+      )
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.progressInfo = res.data
       this.progressVisible = true
-      console.log(this.progressInfo)
+    },
+    sendDialogClosed () {
+      this.$refs.sendFormRef.resetFields()
+    },
+    showSend (_id) {
+      this.current_id = _id
+      this.sendVisible = true
+    },
+    async sendGoods () {
+      this.$refs.sendFormRef.validate(async valid => {
+        if (!valid) return
+        const { data: res } = await this.$http.put(
+          `orders/${this.current_id}/send`,
+          this.sendForm
+        )
+        if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+        this.$message.success(res.meta.msg)
+        this.getOrderList()
+        this.sendVisible = false
+      })
+    },
+    async shutDown (_id) {
+      const confirmResult = await this.$confirm(
+        '此操作将永久关闭该订单, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(err => err)
+      if (confirmResult !== 'confirm') { return this.$message.info('已取消关闭该订单') }
+
+      const { data: res } = await this.$http.put(`orders/${_id}/close`)
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.$message.success(res.meta.msg)
+      this.getOrderList()
+    },
+    async editAddress () {
+      this.$refs.addressFormRef.validate(async valid => {
+        if (!valid) return
+        const { data: res } = await this.$http.put(
+          `orders/${this.current_id}`,
+          this.addressForm
+        )
+        if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+        this.$message.success(res.meta.msg)
+        this.getOrderList()
+        this.addressVisible = false
+      })
     }
   }
 }
 </script>
-<style lang="less" scoped>
-.el-cascader {
+<style>
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
   width: 100%;
 }
 </style>
