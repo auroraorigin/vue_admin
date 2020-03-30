@@ -12,7 +12,7 @@
         <el-form-item prop="name">
           <el-input
             v-model="loginForm.name"
-            prefix-icon="iconfont icon-user"
+            prefix-icon="el-icon-user-solid"
             clearable
             maxlength="20"
             placeholder="管理员名称"
@@ -22,7 +22,7 @@
         <el-form-item prop="password">
           <el-input
             v-model="loginForm.password"
-            prefix-icon="iconfont icon-3702mima"
+            prefix-icon="el-icon-lock"
             type="password"
             maxlength="15"
             placeholder="密码"

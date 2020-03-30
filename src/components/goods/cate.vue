@@ -19,6 +19,19 @@
       <el-table :data="catelist" border stripe>
         <el-table-column label="#" type="index"></el-table-column>
         <el-table-column label="分类名称" prop="name"></el-table-column>
+        <el-table-column
+          label="图片"
+          prop="url"
+          width="102px"
+          class="pic"
+          align="center"
+          header-align="left"
+        >
+          <template slot-scope="scope">
+            <el-image style="width: 83px; height: 70px;" :src="scope.row.url" fit="fill"></el-image>
+          </template>
+        </el-table-column>
+        <el-table-column label="分类ID" prop="_id"></el-table-column>
         <el-table-column label="操作" width="300px">
           <template v-slot="scope">
             <el-button
@@ -65,6 +78,19 @@
         <el-form-item label="分类名称：" prop="name">
           <el-input v-model="addCateForm.name"></el-input>
         </el-form-item>
+        <el-form-item label="图片" prop="url">
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadURL"
+            :headers="headerObj"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="addCateForm.url" :src="addCateForm.url" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addCateDialogVisible = false">取 消</el-button>
@@ -82,6 +108,19 @@
       <el-form ref="editFormRef" :model="editForm" :rules="editFormRules" label-width="70px">
         <el-form-item label="名称" prop="name">
           <el-input v-model="editForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="图片" prop="url">
+          <el-upload
+            class="avatar-uploader"
+            :action="uploadURL"
+            :headers="headerObj"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess1"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="editForm.url" :src="editForm.url" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -106,7 +145,12 @@ export default {
       total: 0,
       addCateDialogVisible: false,
       addCateForm: {
-        name: ''
+        name: '',
+        url: ''
+      },
+      uploadURL: 'http://127.0.0.1:8888/admin/upload',
+      headerObj: {
+        Authorization: window.sessionStorage.getItem('token')
       },
       addCateFormRules: {
         name: [
@@ -117,10 +161,11 @@ export default {
             message: '分类名称长度在1~5个字符之间',
             trigger: 'blur'
           }
-        ]
+        ],
+        url: [{ required: true, message: '请上传分类图片', trigger: 'blur' }]
       },
       editDialogVisible: false,
-      editForm: { name: '' },
+      editForm: { name: '', url: '' },
       editFormRules: {
         name: [
           { required: true, message: '请输入分类名称', trigger: 'blur' },
@@ -130,7 +175,8 @@ export default {
             message: '分类名称长度在1~5个字符之间',
             trigger: 'blur'
           }
-        ]
+        ],
+        url: [{ required: true, message: '请上传分类图片', trigger: 'blur' }]
       }
     }
   },
@@ -214,7 +260,8 @@ export default {
         const { data: res } = await this.$http.put(
           'categories/' + this.editForm._id,
           {
-            name: this.editForm.name
+            name: this.editForm.name,
+            url: this.editForm.url
           }
         )
         if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
@@ -241,16 +288,54 @@ export default {
       if (res.meta.status !== 204) return this.$message.error(res.meta.msg)
       this.$message.success(res.meta.msg)
       this.getCateList()
+    },
+    // 添加分类上传图片成功
+    handleAvatarSuccess (res, file) {
+      this.addCateForm.url = res.data
+    },
+    // 修改分类上传图片成功
+    handleAvatarSuccess1 (res, file) {
+      this.editForm.url = res.data
+    },
+    // 上传图片之前
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传图片只能是 JPG格式 或 png格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
     }
   }
 }
 </script>
 
-<style lang="less" scoped>
-.treeTable {
-  margin-top: 15px;
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
-.el-cascader {
-  width: 100%;
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

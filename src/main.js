@@ -6,7 +6,7 @@ import './plugins/element.js'
 // 引入全局样式
 import './assets/css/global.css'
 // 引入字体图标样式
-import './assets/fonts/iconfont.css'
+// import './assets/fonts/iconfont.css'
 // 引入axios模块
 import axios from 'axios'
 // 引入加载进度条模块

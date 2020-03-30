@@ -57,11 +57,12 @@ export default {
     return {
       menulist: [],
       iconsObj: {
-        '5e71d72f993f6246d8147c27': 'iconfont icon-user',
-        '5e72e81b9e064435c4a7c5cd': 'iconfont icon-tijikongjian',
-        '5e79e56f180d5719dc01d297': 'iconfont icon-shangpin',
-        '5e7df2e29730a725e48324d4': 'iconfont icon-danju',
-        '5e7f4816176df706a4bc85f4': 'iconfont icon-baobiao'
+        '5e71d72f993f6246d8147c27': 'el-icon-user-solid',
+        '5e72e81b9e064435c4a7c5cd': 'el-icon-s-tools',
+        '5e79e56f180d5719dc01d297': 'el-icon-s-goods',
+        '5e7df2e29730a725e48324d4': 'el-icon-s-order',
+        '5e7f4816176df706a4bc85f4': 'el-icon-s-data',
+        '5e818a2f0bd92d2f48772770': 'el-icon-s-marketing'
       },
       isCollapse: false,
       activePath: ''

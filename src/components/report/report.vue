@@ -8,7 +8,8 @@
     </el-breadcrumb>
 
     <el-card>
-      <div id="main" style="width: 600px;height:400px;"></div>
+      <div id="main" style="width: 1000px;height:400px;"></div>
+      <div id="pmain" style="width: 1000px;height:400px;"></div>
     </el-card>
   </div>
 </template>
@@ -20,33 +21,110 @@ import _ from 'lodash'
 export default {
   data () {
     return {
-      options: {
+      option: {
         title: {
-          text: '用户来源'
+          text: '特性示例：渐变色 阴影 点击缩放',
+          subtext: 'Feature Sample: Gradient Color, Shadow, Click Zoom'
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: '#E9EEF3'
+        xAxis: {
+          axisLabel: {
+            inside: true,
+            textStyle: {
+              color: '#fff'
+            }
+          },
+          axisTick: {
+            show: false
+          },
+          axisLine: {
+            show: false
+          },
+          z: 10
+        },
+        yAxis: {
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          axisLabel: {
+            textStyle: {
+              color: '#999'
             }
           }
         },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis: [
+        dataZoom: [
           {
-            boundaryGap: false
+            type: 'inside'
           }
         ],
-        yAxis: [
+        series: [
+          { // For shadow
+            type: 'bar',
+            itemStyle: {
+              color: 'rgba(0,0,0,0.05)'
+            },
+            barGap: '-100%',
+            barCategoryGap: '40%',
+            animation: false
+          },
           {
-            type: 'value'
+            type: 'bar',
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(
+                0, 0, 0, 1,
+                [
+                  { offset: 0, color: '#83bff6' },
+                  { offset: 0.5, color: '#188df0' },
+                  { offset: 1, color: '#188df0' }
+                ]
+              )
+            },
+            emphasis: {
+              itemStyle: {
+                color: new echarts.graphic.LinearGradient(
+                  0, 0, 0, 1,
+                  [
+                    { offset: 0, color: '#2378f7' },
+                    { offset: 0.7, color: '#2378f7' },
+                    { offset: 1, color: '#83bff6' }
+                  ]
+                )
+              }
+            }
+          }
+        ]
+      },
+      poption: {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 10
+        },
+        series: [
+          {
+            name: '访问来源',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '30',
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            }
           }
         ]
       }
@@ -55,17 +133,38 @@ export default {
   created () {},
   methods: {},
   async mounted () {
+    // 柱状图
     var myChart = echarts.init(document.getElementById('main'))
-
-    const { data: res } = await this.$http.get('reports/type/1')
+    const { data: res } = await this.$http.get('reports/zhuzhuangtu')
     if (res.meta.status !== 200) {
       return this.$message.error(res.meta.msg)
     }
+    const result = _.merge(res.data, this.option)
 
-    const result = _.merge(res.data, this.options)
     myChart.setOption(result)
+
+    var temp = result
+    var zoomSize = 6
+    myChart.on('click', function (params) {
+      console.log(this.zoomSize)
+      myChart.dispatchAction({
+        type: 'dataZoom',
+        startValue: temp.xAxis.data[Math.max(params.dataIndex - zoomSize / 2, 0)],
+        endValue: temp.xAxis.data[Math.min(params.dataIndex + zoomSize / 2, temp.series[1].data.length - 1)]
+      })
+    })
+
+    // 饼状图
+    var pmyChart = echarts.init(document.getElementById('pmain'))
+    const { data: Pres } = await this.$http.get('reports/bingzhuangtu')
+    if (Pres.meta.status !== 200) {
+      return this.$message.error(Pres.meta.msg)
+    }
+    const presult = _.merge(Pres.data, this.poption)
+    pmyChart.setOption(presult)
   }
 }
 </script>
+
 <style lang="less" scoped>
 </style>

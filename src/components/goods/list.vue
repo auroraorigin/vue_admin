@@ -24,6 +24,7 @@
       <el-table :data="goodslist" border stripe>
         <el-table-column type="expand">
           <template slot-scope="scope">
+            <p>商品ID:{{scope.row._id}}</p>
             <el-button type="primary" @click="showAddDialog(scope.row._id)">添加规格</el-button>
             <el-table :data="scope.row.specification" border stripe>
               <el-table-column label="规格">
