@@ -40,7 +40,9 @@ import {
   Timeline,
   TimelineItem,
   Image,
-  InputNumber
+  InputNumber,
+  Carousel,
+  CarouselItem
 
 } from 'element-ui'
 
@@ -83,6 +85,8 @@ Vue.use(Timeline)
 Vue.use(TimelineItem)
 Vue.use(Image)
 Vue.use(InputNumber)
+Vue.use(Carousel)
+Vue.use(CarouselItem)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
