@@ -13,7 +13,7 @@
           <!-- 首页 -->
           <el-tab-pane label="首页" name="first">
             <div class="page">
-              <el-card shadow="hover ">
+              <el-card shadow="hover " :body-style="{ padding: '14px' }">
                 <el-carousel height="200px" class="swiper" :autoplay="false">
                   <el-carousel-item v-for="item in adList.swiper" :key="item.id">
                     <el-image style="width: 375px; height: 200px;" :src="item" fit="fill"></el-image>
@@ -75,21 +75,23 @@
           <!-- 分类页面 -->
           <el-tab-pane label="分类" name="second">
             <div class="page">
-              <div class="cate" v-for="item in adList.cate" :key="item.id">
-                <p style="margin-left:5px;">{{item.name}}</p>
-                <div class="cate_goods" v-for="itemg in item.goods" :key="itemg.id">
-                  <el-image
-                    style="width: 140px; height: 94px; border-top-left-radius: 8px; border-bottom-left-radius: 8px;"
-                    :src="itemg.url"
-                    fit="fill"
-                  ></el-image>
-                  <p style="margin-left:5px;">{{itemg.name}}</p>
+              <el-card shadow="hover " :body-style="{ padding: '14px' }">
+                <div class="cate" v-for="item in adList.cate" :key="item.id">
+                  <p style="margin-left:5px;">{{item.name}}</p>
+                  <div class="cate_goods" v-for="itemg in item.goods" :key="itemg.id">
+                    <el-image
+                      style="width: 140px; height: 94px; border-top-left-radius: 8px; border-bottom-left-radius: 8px;"
+                      :src="itemg.url"
+                      fit="fill"
+                    ></el-image>
+                    <p style="margin-left:5px;">{{itemg.name}}</p>
+                  </div>
                 </div>
-              </div>
+              </el-card>
               <div class="btn">
                 <el-button
                   type="primary"
-                  @click="showEditSwiperDialog"
+                  @click="showEditCateDialog"
                   round
                   icon="el-icon-edit"
                   size="medium"
@@ -189,54 +191,50 @@
       >
         <el-form-item label="楼层" prop="floor">
           <el-button type="primary" size="mini" @click="addFloor">添加楼层</el-button>
-          <div
-            v-for="item in editFloorForm.floor"
-            :key="item._id"
-            style="margin-bottom:10px;"
-          >
-          <el-card>
-            <el-upload
-              class="avatar-uploader"
-              :action="uploadURL"
-              :headers="headerObj"
-              :show-file-list="false"
-              :on-success="handleAvatarSuccess"
-              :before-upload="beforeAvatarUpload"
-            >
-              <div @click="getFloor(item)">
-                <img v-if="item.url" :src="item.url" class="avatar" />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-              </div>
-            </el-upload>
-
-            <el-table :data="item.goods" border stripe>
-              <el-table-column label="商品名称" prop="name"></el-table-column>
-              <el-table-column
-                label="图片"
-                prop="url"
-                width="102px"
-                class="pic"
-                align="center"
-                header-align="left"
+          <div v-for="item in editFloorForm.floor" :key="item._id" style="margin-bottom:10px;">
+            <el-card :body-style="{ padding: '15px' }">
+              <el-upload
+                class="avatar-uploader"
+                :action="uploadURL"
+                :headers="headerObj"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
               >
-                <template slot-scope="scope">
-                  <el-image style="width: 83px; height: 70px;" :src="scope.row.url" fit="fill"></el-image>
-                </template>
-              </el-table-column>
-              <el-table-column label="描述" prop="desc"></el-table-column>
-              <el-table-column label="分类" prop="categories.name" width="100px"></el-table-column>
-              <el-table-column label="操作" width="75px">
-                <template slot-scope="scope">
-                  <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    size="mini"
-                    @click="removeFloorGoods(item._id,scope.row._id)"
-                  ></el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <el-button type="danger" size="mini" @click="removeFloor(item._id)">删除楼层</el-button>
+                <div @click="getFloor(item)">
+                  <img v-if="item.url" :src="item.url" class="avatar" />
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </div>
+              </el-upload>
+              <el-button type="primary" size="mini" @click="showAddFloorGoodsDialog(item._id)">添加商品</el-button>
+              <el-table :data="item.goods" border stripe>
+                <el-table-column label="商品名称" prop="name"></el-table-column>
+                <el-table-column
+                  label="图片"
+                  prop="url"
+                  width="102px"
+                  class="pic"
+                  align="center"
+                  header-align="left"
+                >
+                  <template slot-scope="scope">
+                    <el-image style="width: 83px; height: 70px;" :src="scope.row.url" fit="fill"></el-image>
+                  </template>
+                </el-table-column>
+                <el-table-column label="描述" prop="desc"></el-table-column>
+                <el-table-column label="分类" prop="categories.name" width="100px"></el-table-column>
+                <el-table-column label="操作" width="68px">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="danger"
+                      icon="el-icon-delete"
+                      size="mini"
+                      @click="removeFloorGoods(item._id,scope.row._id)"
+                    ></el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-button type="danger" size="mini" @click="removeFloor(item._id)">删除楼层</el-button>
             </el-card>
           </div>
         </el-form-item>
@@ -246,6 +244,94 @@
         <el-button type="primary" @click="editFloor">确 定</el-button>
       </span>
     </el-dialog>
+
+    <!-- 添加楼层商品对话框 -->
+    <el-dialog
+      title="添加商品"
+      :visible.sync="addFloorGoodsDialogVisible"
+      width="30%"
+      @close="closeAddFloorGoodsDialog"
+    >
+      <el-cascader v-model="goods_id" :options="goodsList" :props="{ expandTrigger: 'hover' }"></el-cascader>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addFloorGoodsDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addFloorGoods">添 加</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 修改分类推广对话框 -->
+    <el-dialog title="修改分类页面信息" :visible.sync="editCateDialogVisible" width="75%">
+      <el-form
+        ref="editCateFormRef"
+        :model="editCateForm"
+        :rules="editCateFormRules"
+        label-width="100px"
+      >
+        <el-form-item label="楼层" prop="cate">
+          <el-button type="primary" size="mini" @click="addCate">添加楼层</el-button>
+          <div v-for="item in editCateForm.cate" :key="item._id" style="margin-bottom:10px;">
+            <el-card :body-style="{ padding: '15px' }">
+              <el-tooltip class="item" effect="light" content="点击修改楼层名称" placement="right-start">
+                <el-tag
+                  type="info"
+                  style="cursor:pointer;width:80px"
+                  @click="editCateName(item)"
+                >{{item.name}}</el-tag>
+              </el-tooltip>
+              <br />
+              <el-button type="primary" size="mini" @click="showAddCateGoodsDialog(item._id)">添加商品</el-button>
+              <el-table :data="item.goods" border stripe>
+                <el-table-column label="商品名称" prop="name"></el-table-column>
+                <el-table-column
+                  label="图片"
+                  prop="url"
+                  width="102px"
+                  class="pic"
+                  align="center"
+                  header-align="left"
+                >
+                  <template slot-scope="scope">
+                    <el-image style="width: 83px; height: 70px;" :src="scope.row.url" fit="fill"></el-image>
+                  </template>
+                </el-table-column>
+                <el-table-column label="描述" prop="desc"></el-table-column>
+                <el-table-column label="分类" prop="categories.name" width="100px"></el-table-column>
+                <el-table-column label="操作" width="68px">
+                  <template slot-scope="scope">
+                    <el-button
+                      type="danger"
+                      icon="el-icon-delete"
+                      size="mini"
+                      @click="removeCateGoods(item._id,scope.row._id)"
+                    ></el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-button type="danger" size="mini" @click="removeCate(item._id)">删除楼层</el-button>
+            </el-card>
+          </div>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editCateDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editCate">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 添加分类楼层商品对话框 -->
+    <el-dialog
+      title="添加商品"
+      :visible.sync="addCateGoodsDialogVisible"
+      width="30%"
+      @close="closeAddCateGoodsDialog"
+    >
+      <el-cascader v-model="goods_id" :options="goodsList" :props="{ expandTrigger: 'hover' }"></el-cascader>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addCateGoodsDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addCateGoods">添 加</el-button>
+      </span>
+    </el-dialog>
+
     <!-- 图片预览 -->
     <el-dialog title="图片预览" :visible.sync="previewVisible" width="50%">
       <img :src="previewPath" alt class="previewImg" />
@@ -282,7 +368,19 @@ export default {
       editFloorFormRules: {
         floor: [{ required: true, message: '请完善楼层数据', trigger: 'blur' }]
       },
-      currentFlootId: ''
+      currentFlootId: '',
+      addFloorGoodsDialogVisible: false,
+      goods_id: [],
+      goodsList: [],
+      index: 0,
+      editCateDialogVisible: false,
+      editCateForm: { cate: [] },
+      editCateFormRules: {
+        cate: [
+          { required: true, message: '请完善分类楼层数据', trigger: 'blur' }
+        ]
+      },
+      addCateGoodsDialogVisible: false
     }
   },
   created () {
@@ -457,8 +555,12 @@ export default {
       })
     },
     // 显示编辑楼层信息对话框
-    showEditFloorDialog () {
+    async showEditFloorDialog () {
       this.editFloorForm.floor = JSON.parse(JSON.stringify(this.adList.floor))
+
+      const { data: res } = await this.$http.get('ad/goods')
+
+      this.goodsList = res.data
       this.editFloorDialogVisible = true
     },
     // 获取修改图片楼层ID
@@ -523,10 +625,216 @@ export default {
         }
       }
     },
+    // 显示添加楼层商品对话框
+    async showAddFloorGoodsDialog (_id) {
+      this.currentFlootId = _id
+      this.addFloorGoodsDialogVisible = true
+    },
+    // 关闭添加楼层商品对话框
+    closeAddFloorGoodsDialog () {
+      this.goods_id = []
+    },
+    // 添加楼层商品
+    addFloorGoods () {
+      if (this.goods_id.length !== 2) {
+        return this.$message.error('请选择商品')
+      }
+
+      for (let i = 0; i < this.editFloorForm.floor.length; i++) {
+        if (this.editFloorForm.floor[i]._id === this.currentFlootId) {
+          for (let j = 0; j < this.editFloorForm.floor[i].goods.length; j++) {
+            if (
+              this.editFloorForm.floor[i].goods[j]._id === this.goods_id[1]._id
+            ) {
+              return this.$message.error('该商品已存在')
+            }
+          }
+          this.editFloorForm.floor[i].goods.push(this.goods_id[1])
+          return this.$message.success('添加成功')
+        }
+      }
+    },
     // 添加新楼层
-    addFloor () {},
+    async addFloor () {
+      const confirmResult = await this.$confirm('是否添加新楼层?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).catch(err => err)
+
+      if (confirmResult !== 'confirm') {
+        return
+      }
+
+      const a = this.index
+      this.editFloorForm.floor.push({ _id: a, goods: [], url: '' })
+      this.index++
+    },
     // 修改楼层
-    editFloor () {}
+    editFloor () {
+      this.$refs.editFloorFormRef.validate(async valid => {
+        if (!valid) return
+
+        const { data: res } = await this.$http.put(
+          'ad/floor',
+          this.editFloorForm
+        )
+
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.msg)
+        }
+        this.$message.success(res.meta.msg)
+        this.getAdList()
+        this.editFloorDialogVisible = false
+      })
+    },
+    // 显示修改分类楼层窗口
+    async showEditCateDialog () {
+      this.editCateForm.cate = JSON.parse(JSON.stringify(this.adList.cate))
+
+      const { data: res } = await this.$http.get('ad/goods')
+
+      this.goodsList = res.data
+
+      this.editCateDialogVisible = true
+    },
+    // 添加分类楼层
+    async addCate () {
+      const confirmResult = await this.$confirm('是否添加新楼层?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).catch(err => err)
+
+      if (confirmResult !== 'confirm') {
+        return
+      }
+
+      const a = this.index
+      this.editCateForm.cate.push({ _id: a, goods: [], name: '' })
+      this.index++
+    },
+    // 修改分类楼层名称
+    editCateName (info) {
+      this.$prompt('请修改楼层名称', '修改楼层名称', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: info.name
+      })
+        .then(({ value }) => {
+          if (value === '') {
+            this.$message({
+              type: 'error',
+              message: '修改失败'
+            })
+          } else {
+            for (let i = 0; i < this.editCateForm.cate.length; i++) {
+              if (this.editCateForm.cate[i]._id === info._id) {
+                this.editCateForm.cate[i].name = value
+                return
+              }
+            }
+          }
+        })
+        .catch(() => {})
+    },
+    // 显示分类楼层商品对话框
+    async showAddCateGoodsDialog (_id) {
+      this.currentFlootId = _id
+      this.addCateGoodsDialogVisible = true
+    },
+    // 删除分类楼层商品
+    async removeCateGoods (id, _id) {
+      const confirmResult = await this.$confirm(
+        '此操作将删除该商品, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(err => err)
+
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+
+      for (let i = 0; i < this.editCateForm.cate.length; i++) {
+        if (this.editCateForm.cate[i]._id === id) {
+          for (let j = 0; j < this.editCateForm.cate[i].goods.length; j++) {
+            if (this.editCateForm.cate[i].goods[j]._id === _id) {
+              this.editCateForm.cate[i].goods.splice(j, 1)
+              return
+            }
+          }
+        }
+      }
+    },
+    // 删除分类楼层
+    async removeCate (_id) {
+      const confirmResult = await this.$confirm(
+        '此操作将删除该楼层, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(err => err)
+
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+
+      for (let i = 0; i < this.editCateForm.cate.length; i++) {
+        if (this.editCateForm.cate[i]._id === _id) {
+          this.editCateForm.cate.splice(i, 1)
+          return
+        }
+      }
+    },
+    // 关闭添加分类楼层商品对话框
+    closeAddCateGoodsDialog () {
+      this.goods_id = []
+    },
+    // 添加分类楼层商品
+    addCateGoods () {
+      if (this.goods_id.length !== 2) {
+        return this.$message.error('请选择商品')
+      }
+
+      for (let i = 0; i < this.editCateForm.cate.length; i++) {
+        if (this.editCateForm.cate[i]._id === this.currentFlootId) {
+          for (let j = 0; j < this.editCateForm.cate[i].goods.length; j++) {
+            if (
+              this.editCateForm.cate[i].goods[j]._id === this.goods_id[1]._id
+            ) {
+              return this.$message.error('该商品已存在')
+            }
+          }
+          this.editCateForm.cate[i].goods.push(this.goods_id[1])
+          return this.$message.success('添加成功')
+        }
+      }
+    },
+    // 修改分类楼层
+    editCate () {
+      this.$refs.editCateFormRef.validate(async valid => {
+        if (!valid) return
+
+        const { data: res } = await this.$http.put(
+          'ad/cate',
+          this.editCateForm
+        )
+
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.msg)
+        }
+        this.$message.success(res.meta.msg)
+        this.getAdList()
+        this.editCateDialogVisible = false
+      })
+    }
   }
 }
 </script>
@@ -563,12 +871,15 @@ export default {
 }
 .product {
   width: 375px;
+  flex-wrap: wrap;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
 .goods {
+  flex-wrap: wrap;
   width: 180px;
+  margin-bottom: 5px;
   border-radius: 8px;
   border: 1.5px solid #cbccce;
   box-shadow: 0px 0px 7px #ededed;
@@ -580,7 +891,8 @@ export default {
   display: flex;
   align-items: center;
   width: 375px;
-  border: 1px solid #cbccce;
+  border: 1.5px solid #cbccce;
+  box-shadow: 0px 0px 7px #ededed;
   border-radius: 8px;
   margin-bottom: 5px;
 }
