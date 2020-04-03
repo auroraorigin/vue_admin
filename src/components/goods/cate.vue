@@ -18,21 +18,22 @@
 
       <el-table :data="catelist" border stripe>
         <el-table-column label="#" type="index"></el-table-column>
-        <el-table-column label="分类名称" prop="name"></el-table-column>
+        <el-table-column label="分类编号" prop="_id"></el-table-column>
+        <el-table-column label="分类名称" prop="name" width="304px"></el-table-column>
         <el-table-column
           label="图片"
           prop="url"
-          width="102px"
+          width="304px"
           class="pic"
           align="center"
           header-align="left"
         >
           <template slot-scope="scope">
-            <el-image style="width: 83px; height: 70px;" :src="scope.row.url" fit="fill"></el-image>
+            <el-image style="width: 83.6px; height: 70.5px;" :src="scope.row.url" fit="fill"></el-image>
           </template>
         </el-table-column>
-        <el-table-column label="分类ID" prop="_id"></el-table-column>
-        <el-table-column label="操作" width="300px">
+
+        <el-table-column label="操作" width="180px">
           <template v-slot="scope">
             <el-button
               type="primary"
@@ -55,7 +56,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="querInfo.pagenum"
-        :page-sizes="[3, 5, 10, 15]"
+        :page-sizes="[3, 5, 10]"
         :page-size="querInfo.pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -66,7 +67,7 @@
     <el-dialog
       title="添加分类"
       :visible.sync="addCateDialogVisible"
-      width="50%"
+      width="40%"
       @close="addCateDialogClosed"
     >
       <el-form
@@ -76,7 +77,7 @@
         label-width="100px"
       >
         <el-form-item label="分类名称：" prop="name">
-          <el-input v-model="addCateForm.name"></el-input>
+          <el-input v-model.trim="addCateForm.name"></el-input>
         </el-form-item>
         <el-form-item label="图片" prop="url">
           <el-upload
@@ -107,7 +108,7 @@
     >
       <el-form ref="editFormRef" :model="editForm" :rules="editFormRules" label-width="70px">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="editForm.name"></el-input>
+          <el-input v-model.trim="editForm.name"></el-input>
         </el-form-item>
         <el-form-item label="图片" prop="url">
           <el-upload
@@ -314,7 +315,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -325,12 +326,16 @@ export default {
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
-.avatar-uploader-icon {
+.el-icon-plus {
+  line-height: 178px !important;
+}
+.el-icon-plus .avatar-uploader-icon {
+  margin-top: 5px;
   font-size: 28px;
   color: #8c939d;
   width: 178px;
   height: 178px;
-  line-height: 178px;
+
   text-align: center;
 }
 .avatar {

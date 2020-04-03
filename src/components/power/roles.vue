@@ -76,10 +76,10 @@
     <el-dialog title="添加角色" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
       <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="70px">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="addForm.name"></el-input>
+          <el-input v-model.trim="addForm.name"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input v-model="addForm.desc"></el-input>
+          <el-input v-model.trim="addForm.desc"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -96,10 +96,10 @@
     >
       <el-form ref="editFormRef" :model="editForm" :rules="editFormRules" label-width="70px">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="editForm.name"></el-input>
+          <el-input v-model.trim="editForm.name"></el-input>
         </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input v-model="editForm.desc"></el-input>
+          <el-input v-model.trim="editForm.desc"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

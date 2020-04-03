@@ -12,6 +12,7 @@
         <el-table-column label="#" type="index"></el-table-column>
         <el-table-column label="权限名称" prop="name"></el-table-column>
         <el-table-column label="路径" prop="path"></el-table-column>
+        <el-table-column label="请求方法" prop="method"></el-table-column>
         <el-table-column label="权限等级" prop="pid">
           <template v-slot="scope">
             <el-tag v-if="scope.row.pid.length=='0'">一级</el-tag>

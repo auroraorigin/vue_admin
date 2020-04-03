@@ -6,7 +6,7 @@
     </el-header>
     <el-container>
       <el-aside :width="isCollapse ? '64px':'200px'">
-        <div class="toggle-button" @click="toggleCollapse">|||</div>
+        <div :class="isCollapse ? 'el-icon-d-arrow-right toggle-button':'el-icon-d-arrow-left toggle-button'" @click="toggleCollapse"></div>
         <!-- 侧边菜单 -->
         <el-menu
           background-color="#293a4a"
@@ -57,12 +57,12 @@ export default {
     return {
       menulist: [],
       iconsObj: {
-        '5e71d72f993f6246d8147c27': 'el-icon-user-solid',
-        '5e72e81b9e064435c4a7c5cd': 'el-icon-s-tools',
-        '5e79e56f180d5719dc01d297': 'el-icon-s-goods',
-        '5e7df2e29730a725e48324d4': 'el-icon-s-order',
-        '5e7f4816176df706a4bc85f4': 'el-icon-s-data',
-        '5e818a2f0bd92d2f48772770': 'el-icon-s-marketing'
+        '5e871fb3f9b9e1344c729662': 'el-icon-user-solid',
+        '5e87262ef9b9e1344c72966b': 'el-icon-s-tools',
+        '5e8733abf9b9e1344c729677': 'el-icon-s-goods',
+        '5e873912f9b9e1344c72968a': 'el-icon-s-order',
+        '5e873b5df9b9e1344c729691': 'el-icon-s-data',
+        '5e873c6bf9b9e1344c729694': 'el-icon-notebook-2'
       },
       isCollapse: false,
       activePath: ''
@@ -126,12 +126,15 @@ export default {
 }
 
 .toggle-button {
+  width: 100%;
+  height: 21px;
+  line-height: 21px;
   background-color: #4a5064;
-  font-size: 10px;
-  line-height: 24px;
-  color: #e9edf1;
+  // font-size: 10px;
+  // line-height: 24px;
+  color: #909399;
   text-align: center;
-  letter-spacing: 0.2em;
+  // letter-spacing: 0.2em;
   cursor: pointer;
 }
 .main{

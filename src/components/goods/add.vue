@@ -29,7 +29,7 @@
         <el-tabs v-model="activeIndex" tab-position="left">
           <el-tab-pane label="基本信息" name="0">
             <el-form-item label="商品名称" prop="name">
-              <el-input v-model="addForm.name"></el-input>
+              <el-input v-model.trim="addForm.name"></el-input>
             </el-form-item>
             <el-form-item label="图片" prop="url">
               <el-upload
@@ -41,11 +41,11 @@
                 :before-upload="beforeAvatarUpload"
               >
                 <img v-if="addForm.url" :src="addForm.url" class="avatar" />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                <i v-else class="avatar-uploader-icon">+</i>
               </el-upload>
             </el-form-item>
             <el-form-item label="描述" prop="desc">
-              <el-input v-model="addForm.desc"></el-input>
+              <el-input v-model.trim="addForm.desc"></el-input>
             </el-form-item>
             <el-form-item label="分类" prop="categories">
               <el-select v-model="addForm.categories" placeholder="请选择">
@@ -67,7 +67,7 @@
                   <el-table-column label="价格(元)" prop="price"></el-table-column>
                   <el-table-column label="库存(件)" prop="stock"></el-table-column>
                   <el-table-column label="运费(元)" prop="freight"></el-table-column>
-                  <el-table-column label="操作" width="172px">
+                  <el-table-column label="操作" width="65px">
                     <template slot-scope="scope">
                       <el-button
                         type="danger"
@@ -132,16 +132,16 @@
     <el-dialog title="添加规格" :visible.sync="addSDialogVisible" width="40%">
       <el-form ref="addSFormRef" :model="addSForm" :rules="addSFormRules" label-width="100px">
         <el-form-item label="属性名称" prop="name">
-          <el-input v-model="addSForm.name"></el-input>
+          <el-input v-model.trim="addSForm.name"></el-input>
         </el-form-item>
         <el-form-item label="价格" prop="price">
-          <el-input-number v-model="addSForm.price" :precision="2" :step="10" :max="9999" :min="0"></el-input-number>
+          <el-input-number v-model.trim="addSForm.price" :precision="2" :step="10" :max="9999" :min="0"></el-input-number>
         </el-form-item>
         <el-form-item label="库存" prop="stock">
-          <el-input-number v-model="addSForm.stock" :step="10" :max="9999" :min="0"></el-input-number>
+          <el-input-number v-model.trim="addSForm.stock" :step="10" :max="9999" :min="0"></el-input-number>
         </el-form-item>
         <el-form-item label="运费" prop="freight">
-          <el-input-number v-model="addSForm.freight" :precision="2" :step="10" :max="999" :min="0"></el-input-number>
+          <el-input-number v-model.trim="addSForm.freight" :precision="2" :step="10" :max="999" :min="0"></el-input-number>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -370,11 +370,13 @@ export default {
   border-color: #409eff;
 }
 .avatar-uploader-icon {
-  font-size: 28px;
+  display: flex;
+  align-items: center;
+  font-size: 50px;
   color: #8c939d;
   width: 178px;
   height: 178px;
-  line-height: 178px;
+  justify-content: center;
   text-align: center;
 }
 .avatar {

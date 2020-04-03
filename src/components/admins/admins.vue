@@ -71,16 +71,16 @@
     <el-dialog title="添加管理员" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
       <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="70px">
         <el-form-item label="名称" prop="name">
-          <el-input v-model="addForm.name"></el-input>
+          <el-input v-model.trim="addForm.name"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="addForm.password"></el-input>
+          <el-input v-model.trim="addForm.password"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="addForm.email"></el-input>
+          <el-input v-model.trim="addForm.email"></el-input>
         </el-form-item>
         <el-form-item label="手机" prop="mobile">
-          <el-input v-model="addForm.mobile"></el-input>
+          <el-input v-model.trim="addForm.mobile"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -97,13 +97,13 @@
     >
       <el-form ref="editFormRef" :model="editForm" :rules="editFormRules" label-width="70px">
         <el-form-item label="名称">
-          <el-input v-model="editForm.name" disabled></el-input>
+          <el-input v-model.trim="editForm.name" disabled></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="editForm.email"></el-input>
+          <el-input v-model.trim="editForm.email"></el-input>
         </el-form-item>
         <el-form-item label="手机" prop="mobile">
-          <el-input v-model="editForm.mobile"></el-input>
+          <el-input v-model.trim="editForm.mobile"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

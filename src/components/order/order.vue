@@ -11,7 +11,7 @@
     <el-card>
       <el-row>
         <el-col :span="8">
-          <el-input placeholder="请输入订单编号" v-model="queryInfo.query" clearable @clear="getOrderList()">
+          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getOrderList()">
             <el-button slot="append" icon="el-icon-search" @click="getOrderList()"></el-button>
           </el-input>
         </el-col>
@@ -38,12 +38,8 @@
                 <span v-if="scope.row.expressNumber">{{ scope.row.expressNumber}}</span>
                 <span v-else>无</span>
               </el-form-item>
-              <el-form-item label="总运费">
-                <span>¥ {{ scope.row.freight}}</span>
-              </el-form-item>
-              <el-form-item label="优惠券">
-                <span v-if="scope.row.coupon">¥ {{scope.row.coupon}}</span>
-                <span v-else>无</span>
+              <el-form-item label="合计金额">
+                <span>¥ {{scope.row.totalPrice}} = 商品价格:¥ {{Number(scope.row.totalPrice)+Number(scope.row.freight)+Number(scope.row.coupon)}} - 总运费:¥ {{ scope.row.freight}} - 优惠券:¥ {{scope.row.coupon}}</span>
               </el-form-item>
             </el-form>
 
@@ -60,8 +56,9 @@
 
         <el-table-column label="#" type="index"></el-table-column>
         <el-table-column label="订单编号" prop="_id"></el-table-column>
-        <el-table-column label="价格(元)" prop="totalPrice"></el-table-column>
-        <el-table-column label="状态">
+        <el-table-column label="用户编号" prop="openid"></el-table-column>
+        <el-table-column label="价格(元)" prop="totalPrice" width="110px"></el-table-column>
+        <el-table-column label="状态" width="110px">
           <template v-slot="scope">
             <el-tag v-if="scope.row.state=='待付款'">待付款</el-tag>
             <el-tag type="warning" v-else-if="scope.row.state=='待发货'">待发货</el-tag>
@@ -71,8 +68,8 @@
             <el-tag type="info" v-else-if="scope.row.state=='交易关闭'">交易关闭</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" prop="creatDate"></el-table-column>
-        <el-table-column label="更新订单状态">
+        <el-table-column label="创建时间" prop="creatDate" width="150px"></el-table-column>
+        <el-table-column label="待处理订单" width="110px">
           <template v-slot="scope">
             <el-button
               size="mini"
@@ -88,7 +85,7 @@
             >关闭订单</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="120px">
           <template v-slot="scope">
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showBox(scope.row)"></el-button>
             <el-button
@@ -116,7 +113,7 @@
     <el-dialog title="发货" :visible.sync="sendVisible" width="50%" @close="sendDialogClosed">
       <el-form :model="sendForm" :rules="sendFormRules" ref="sendFormRef" label-width="100px">
         <el-form-item label="快递编号" prop="expressNumber">
-          <el-input v-model="sendForm.expressNumber"></el-input>
+          <el-input v-model.trim.trim="sendForm.expressNumber"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -139,19 +136,19 @@
         label-width="100px"
       >
         <el-form-item label="收货人" prop="consignee">
-          <el-input v-model="addressForm.consignee"></el-input>
+          <el-input v-model.trim="addressForm.consignee"></el-input>
         </el-form-item>
         <el-form-item label="手机号码" prop="mobile">
-          <el-input v-model="addressForm.mobile"></el-input>
+          <el-input v-model.trim="addressForm.mobile"></el-input>
         </el-form-item>
         <el-form-item label="省市区/县" prop="region_name">
-          <el-input v-model="addressForm.region_name"></el-input>
+          <el-input v-model.trim="addressForm.region_name"></el-input>
         </el-form-item>
         <el-form-item label="详细地址" prop="detail_address">
-          <el-input v-model="addressForm.detail_address"></el-input>
+          <el-input v-model.trim="addressForm.detail_address"></el-input>
         </el-form-item>
         <el-form-item label="快递编号" prop="expressNumber">
-          <el-input v-model="addressForm.expressNumber"></el-input>
+          <el-input v-model.trim="addressForm.expressNumber"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -269,8 +266,9 @@ export default {
       this.$refs.addressFormRef.resetFields()
     },
     async showProgressBox (info) {
+      // info.expressNumber
       const { data: res } = await this.$http.get(
-        `orders/${info.expressNumber}/kuaidi`
+        'orders/804909574412544580/kuaidi'
       )
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.progressInfo = res.data

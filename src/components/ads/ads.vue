@@ -3,8 +3,8 @@
     <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/welcome' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>推广信息管理</el-breadcrumb-item>
-      <el-breadcrumb-item>推广信息列表</el-breadcrumb-item>
+      <el-breadcrumb-item>页面管理</el-breadcrumb-item>
+      <el-breadcrumb-item>页面列表</el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-card>
@@ -95,7 +95,7 @@
                   round
                   icon="el-icon-edit"
                   size="medium"
-                >编辑推广分类</el-button>
+                >编辑分类楼层信息</el-button>
               </div>
             </div>
           </el-tab-pane>
@@ -105,7 +105,7 @@
 
     <!-- 修改轮播图对话框 -->
     <el-dialog
-      title="修改首页轮播图"
+      title="编辑轮播图"
       :visible.sync="editSwiperDialogVisible"
       width="50%"
       @close="editSwiperDialogClosed"
@@ -141,7 +141,7 @@
     </el-dialog>
     <!-- 修改公告对话框 -->
     <el-dialog
-      title="修改首页公告"
+      title="编辑公告信息"
       :visible.sync="editNoticeDialogVisible"
       width="50%"
       @close="editNoticeDialogClosed"
@@ -156,7 +156,7 @@
           <el-button type="primary" size="mini" @click="addNotice">添加公告</el-button>
           <el-table :data="editNoticeForm.notice" border stripe>
             <el-table-column label="信息" prop="name"></el-table-column>
-            <el-table-column label="操作" width="150px">
+            <el-table-column label="操作" width="118px">
               <template slot-scope="scope">
                 <el-button
                   type="primary"
@@ -182,7 +182,7 @@
     </el-dialog>
 
     <!-- 修改楼层信息对话框 -->
-    <el-dialog title="修改楼层信息" :visible.sync="editFloorDialogVisible" width="75%">
+    <el-dialog title="编辑楼层信息" :visible.sync="editFloorDialogVisible" width="75%">
       <el-form
         ref="editFloorFormRef"
         :model="editFloorForm"
@@ -260,7 +260,7 @@
     </el-dialog>
 
     <!-- 修改分类推广对话框 -->
-    <el-dialog title="修改分类页面信息" :visible.sync="editCateDialogVisible" width="75%">
+    <el-dialog title="编辑分类楼层信息" :visible.sync="editCateDialogVisible" width="75%">
       <el-form
         ref="editCateFormRef"
         :model="editCateForm"
@@ -904,7 +904,7 @@ export default {
   margin: 0;
 }
 .el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
+  background-color: #d3dce6;
 }
 
 .el-carousel__item:nth-child(2n + 1) {
@@ -923,14 +923,14 @@ export default {
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
+  width: 375px;
+  height: 200px;
+  line-height: 200px;
   text-align: center;
 }
 .avatar {
-  width: 178px;
-  height: 178px;
+  width: 375px;
+  height: 200px;
   display: block;
 }
 </style>

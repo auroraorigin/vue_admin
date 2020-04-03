@@ -24,7 +24,6 @@
       <el-table :data="goodslist" border stripe>
         <el-table-column type="expand">
           <template slot-scope="scope">
-            <p>商品ID:{{scope.row._id}}</p>
             <el-button type="primary" @click="showAddDialog(scope.row._id)">添加规格</el-button>
             <el-table :data="scope.row.specification" border stripe>
               <el-table-column label="规格">
@@ -32,7 +31,7 @@
                 <el-table-column label="价格(元)" prop="price"></el-table-column>
                 <el-table-column label="库存(件)" prop="stock"></el-table-column>
                 <el-table-column label="运费(元)" prop="freight"></el-table-column>
-                <el-table-column label="操作" width="172px">
+                <el-table-column label="操作" width="118px">
                   <template slot-scope="Scope">
                     <el-button
                       type="primary"
@@ -118,7 +117,7 @@
     >
       <el-form ref="editFormRef1" :model="editForm1" :rules="editFormRules1" label-width="100px">
         <el-form-item label="商品名称" prop="name">
-          <el-input v-model="editForm1.name"></el-input>
+          <el-input v-model.trim="editForm1.name"></el-input>
         </el-form-item>
         <el-form-item label="图片" prop="url">
           <el-upload
@@ -134,7 +133,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="描述" prop="desc">
-          <el-input v-model="editForm1.desc"></el-input>
+          <el-input v-model.trim="editForm1.desc"></el-input>
         </el-form-item>
         <el-form-item label="分类" prop="categories">
           <el-select v-model="editForm1.categories" placeholder="请选择">
@@ -203,7 +202,7 @@
     <el-dialog title="添加规格" :visible.sync="addDialogVisible" width="40%" @close="addDialogClosed">
       <el-form ref="addFormRef" :model="addForm" :rules="addFormRules" label-width="100px">
         <el-form-item label="属性名称" prop="name">
-          <el-input v-model="addForm.name"></el-input>
+          <el-input v-model.trim="addForm.name"></el-input>
         </el-form-item>
         <el-form-item label="价格" prop="price">
           <el-input-number v-model="addForm.price" :precision="2" :step="10" :max="9999" :min="0"></el-input-number>
@@ -224,7 +223,7 @@
     <el-dialog title="修改规格" :visible.sync="editSDialogVisible" width="40%">
       <el-form ref="editSFormRef" :model="editSForm" :rules="addFormRules" label-width="100px">
         <el-form-item label="属性名称" prop="name">
-          <el-input v-model="editSForm.name"></el-input>
+          <el-input v-model.trim="editSForm.name"></el-input>
         </el-form-item>
         <el-form-item label="价格" prop="price">
           <el-input-number v-model="editSForm.price" :precision="2" :step="10" :max="9999" :min="0"></el-input-number>
