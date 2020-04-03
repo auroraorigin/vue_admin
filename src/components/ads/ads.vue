@@ -14,13 +14,13 @@
           <el-tab-pane label="首页" name="first">
             <div class="page">
               <el-card shadow="hover " :body-style="{ padding: '14px' }">
-                <el-carousel height="200px" class="swiper" :autoplay="false">
+                <el-carousel height="200px" class="swiper" autoplay>
                   <el-carousel-item v-for="item in adList.swiper" :key="item.id">
                     <el-image style="width: 375px; height: 200px;" :src="item" fit="fill"></el-image>
                   </el-carousel-item>
                 </el-carousel>
 
-                <el-carousel height="50px" class="notice" :autoplay="false" direction="vertical">
+                <el-carousel height="50px" class="notice" autoplay direction="vertical">
                   <el-carousel-item v-for="item in adList.notice" :key="item.id">
                     <p class="noticep">{{item.name}}</p>
                   </el-carousel-item>
@@ -904,11 +904,11 @@ export default {
   margin: 0;
 }
 .el-carousel__item:nth-child(2n) {
-  background-color: #d3dce6;
+  background-color: #fff;
 }
 
 .el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
+  background-color: #fff;
 }
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
