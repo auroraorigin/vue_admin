@@ -72,7 +72,7 @@
               </div>
             </div>
           </el-tab-pane>
-          <!-- 分类页面 -->
+          <!-- 分类 -->
           <el-tab-pane label="分类" name="second">
             <div class="page">
               <el-card shadow="hover " :body-style="{ padding: '14px' }">
@@ -98,6 +98,27 @@
                 >编辑分类楼层信息</el-button>
               </div>
             </div>
+          </el-tab-pane>
+          <!-- 我的 -->
+          <el-tab-pane label="我的" name="third">
+            <el-button type="primary" @click="addCouponDialogVisible = true">添加优惠券</el-button>
+            <el-table :data="couponList" border stripe>
+            <el-table-column label="名称" prop="name"></el-table-column>
+            <el-table-column label="使用条件(金额)" prop="money[0]"></el-table-column>
+            <el-table-column label="优惠金额" prop="money[1]"></el-table-column>
+            <el-table-column label="剩余数量" prop="number"></el-table-column>
+            <el-table-column label="初始日期" prop="effective[0]"></el-table-column>
+            <el-table-column label="截止日期" prop="effective[1]"></el-table-column>
+            <el-table-column label="操作" width="80px">
+              <template slot-scope="scope">
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  @click="removeCoupon(scope.row._id)"
+                ></el-button>
+              </template>
+            </el-table-column>
+          </el-table>
           </el-tab-pane>
         </el-tabs>
       </template>
@@ -332,6 +353,50 @@
       </span>
     </el-dialog>
 
+    <!-- 添加优惠券对话框 -->
+    <el-dialog
+      title="添加优惠券"
+      :visible.sync="addCouponDialogVisible"
+      width="50%"
+      @close="addCouponDialogClosed"
+    >
+      <el-form
+        ref="addCouponFormRef"
+        :model="addCouponForm"
+        :rules="addCouponFormRules"
+        label-width="110px"
+      >
+        <el-form-item label="优惠券名称" prop="name">
+          <el-input v-model.trim="addCouponForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="使用条件(金额)" prop="money[0]">
+          <el-input-number v-model="addCouponForm.money[0]" :step="10" :max="9999" :min="0"></el-input-number>
+        </el-form-item>
+        <el-form-item label="优惠金额" prop="money[1]">
+          <el-input-number v-model="addCouponForm.money[1]" :step="1" :max="999" :min="0"></el-input-number>
+        </el-form-item>
+        <el-form-item label="数量" prop="number">
+          <el-input-number v-model="addCouponForm.number" :step="1" :max="9999" :min="0"></el-input-number>
+        </el-form-item>
+        <el-form-item prop="effective" label="起始日期">
+              <el-date-picker
+                v-model="addCouponForm.effective"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="yyyy.M.d"
+                :picker-options="pickerOptions"
+                >
+              </el-date-picker>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addCouponDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addCoupon">确 定</el-button>
+      </span>
+    </el-dialog>
+
     <!-- 图片预览 -->
     <el-dialog title="图片预览" :visible.sync="previewVisible" width="50%">
       <img :src="previewPath" alt class="previewImg" />
@@ -380,7 +445,32 @@ export default {
           { required: true, message: '请完善分类楼层数据', trigger: 'blur' }
         ]
       },
-      addCateGoodsDialogVisible: false
+      addCateGoodsDialogVisible: false,
+      couponList: [],
+      addCouponDialogVisible: false,
+      addCouponForm: { money: ['', ''], effective: '', name: '', number: 0 },
+      addCouponFormRules: {
+        name: [
+          { required: true, message: '请输入优惠券名称', trigger: 'blur' },
+          {
+            min: 2,
+            max: 15,
+            message: '优惠券名称的长度在1~15个字符之间',
+            trigger: 'blur'
+          }
+        ],
+        number: [
+          { required: true, message: '请输入优惠券数量', trigger: 'blur' }
+        ],
+        effective: [
+          { required: true, message: '请完善优惠券起始日期', trigger: 'blur' }
+        ]
+      },
+      pickerOptions: {
+        disabledDate (time) {
+          return time.getTime() < Date.now() - 8.64e7
+        }
+      }
     }
   },
   created () {
@@ -389,6 +479,8 @@ export default {
   methods: {
     async getAdList () {
       const { data: res } = await this.$http.get('ad')
+      const coupon = await this.$http.get('ad/coupon')
+      this.couponList = coupon.data.data
       this.adList = res.data
     },
     // 显示修改轮播图对话框
@@ -833,6 +925,54 @@ export default {
         this.$message.success(res.meta.msg)
         this.getAdList()
         this.editCateDialogVisible = false
+      })
+    },
+    // 删除优惠券
+    async removeCoupon (_id) {
+      const confirmResult = await this.$confirm(
+        '此操作将永久删除该优惠券, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(err => err)
+
+      if (confirmResult !== 'confirm') {
+        return this.$message.info('已经取消删除')
+      }
+
+      const { data: res } = await this.$http.delete(`ad/coupon/${_id}`)
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      const coupon = await this.$http.get('ad/coupon')
+      this.couponList = coupon.data.data
+      this.$message.success(res.meta.msg)
+    },
+    // 关闭添加优惠券对话框
+    addCouponDialogClosed () {
+      this.$refs.addCouponFormRef.resetFields()
+    },
+    // 添加优惠券
+    addCoupon () {
+      this.$refs.addCouponFormRef.validate(async valid => {
+        if (!valid) return
+        if (this.addCouponForm.money[0] < this.addCouponForm.money[1]) { return this.$message.error('使用优惠券条件金额必须大于优惠金额') }
+
+        const { data: res } = await this.$http.post('ad/coupon',
+          this.addCouponForm
+        )
+
+        if (res.meta.status !== 201) {
+          return this.$message.error(res.meta.msg)
+        }
+
+        const coupon = await this.$http.get('ad/coupon')
+        this.couponList = coupon.data.data
+        this.addCouponDialogVisible = false
+        this.$message.success(res.meta.msg)
       })
     }
   }

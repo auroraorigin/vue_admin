@@ -42,7 +42,8 @@ import {
   Image,
   InputNumber,
   Carousel,
-  CarouselItem
+  CarouselItem,
+  DatePicker
 
 } from 'element-ui'
 
@@ -87,6 +88,7 @@ Vue.use(Image)
 Vue.use(InputNumber)
 Vue.use(Carousel)
 Vue.use(CarouselItem)
+Vue.use(DatePicker)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
