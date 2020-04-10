@@ -13,7 +13,7 @@
           <!-- 首页 -->
           <el-tab-pane label="首页" name="first">
             <div class="page">
-              <el-card shadow="hover " :body-style="{ padding: '14px' }">
+              <el-card shadow="hover " :body-style="{ padding: '14px' }" style="width:422px;height:590px;overflow:auto;" >
                 <el-carousel height="200px" class="swiper" autoplay>
                   <el-carousel-item v-for="item in adList.swiper" :key="item.id">
                     <el-image style="width: 375px; height: 200px;" :src="item" fit="fill"></el-image>
@@ -75,7 +75,7 @@
           <!-- 分类 -->
           <el-tab-pane label="分类" name="second">
             <div class="page">
-              <el-card shadow="hover " :body-style="{ padding: '14px' }">
+              <el-card shadow="hover " :body-style="{ padding: '14px' }" style="width:422px;height:590px;overflow:auto;">
                 <div class="cate" v-for="item in adList.cate" :key="item.id">
                   <p style="margin-left:5px;">{{item.name}}</p>
                   <div class="cate_goods" v-for="itemg in item.goods" :key="itemg.id">
@@ -99,8 +99,40 @@
               </div>
             </div>
           </el-tab-pane>
+          <!-- 商品详情 -->
+          <el-tab-pane label="详情" name="third">
+            <div class="page">
+              <el-card shadow="hover " :body-style="{ padding: '14px' }" style="width:422px;height:590px;overflow:auto;" >
+                <div v-for="item in adList.detail" :key="item.id">
+                <el-image
+                    style="width: 375px;border-radius: 8px;margin-bottom:5px;"
+                    :src="item"
+                    fit="fill"
+                  ></el-image>
+                </div>
+              </el-card>
+              <div class="btn">
+                <el-button
+                  type="primary"
+                  @click="editDiscount"
+                  round
+                  icon="el-icon-edit"
+                  size="medium"
+                >编辑商品免邮金额</el-button>
+                <Br />
+                <el-button
+                  type="info"
+                  @click="showEditDetailDialog"
+                  round
+                  icon="el-icon-edit"
+                  style="margin:5px 0;"
+                  size="medium"
+                >编辑商品详情图片</el-button>
+              </div>
+            </div>
+          </el-tab-pane>
           <!-- 我的 -->
-          <el-tab-pane label="我的" name="third">
+          <el-tab-pane label="我的" name="fourth">
             <el-button type="primary" @click="addCouponDialogVisible = true">添加优惠券</el-button>
             <el-table :data="couponList" border stripe>
             <el-table-column label="名称" prop="name"></el-table-column>
@@ -397,6 +429,43 @@
       </span>
     </el-dialog>
 
+     <!-- 编辑详情图对话框 -->
+    <el-dialog
+      title="编辑详情图"
+      :visible.sync="editDetailDialogVisible"
+      width="50%"
+      @close="editDetailDialogClosed"
+    >
+      <el-form
+        ref="editDetailFormRef"
+        :model="editDetailForm"
+        :rules="editDetailFormRules"
+        label-width="100px"
+      >
+        <el-form-item label="商品详情图" prop="swiper">
+          <el-upload
+            class="upload-demo"
+            :action="uploadURL"
+            :on-preview="handlePreview"
+            :on-success="handleDetailSuccess"
+            :on-remove="handleDetailRemove"
+            :file-list="editDetailForm.detail"
+            :headers="headerObj"
+            list-type="picture"
+            :limit="5"
+            :before-upload="beforeAvatarUpload"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过2MB</div>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDetailDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editDetail">确 定</el-button>
+      </span>
+    </el-dialog>
+
     <!-- 图片预览 -->
     <el-dialog title="图片预览" :visible.sync="previewVisible" width="50%">
       <img :src="previewPath" alt class="previewImg" />
@@ -470,6 +539,13 @@ export default {
         disabledDate (time) {
           return time.getTime() < Date.now() - 8.64e7
         }
+      },
+      editDetailDialogVisible: false,
+      editDetailForm: { detail: [] },
+      editDetailFormRules: {
+        detail: [
+          { required: true, message: '请上传详情图', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -973,6 +1049,79 @@ export default {
         this.couponList = coupon.data.data
         this.addCouponDialogVisible = false
         this.$message.success(res.meta.msg)
+      })
+    },
+    // 修改商品免邮金额
+    editDiscount () {
+      this.$prompt('请输入修改后的商品免邮金额', '编辑商品免邮金额', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: this.adList.discount
+      })
+        .then(async ({ value }) => {
+          const discount = Number(value.trim())
+          if (discount === 0 || isNaN(discount)) {
+            this.$message({
+              type: 'error',
+              message: '修改失败'
+            })
+          } else {
+            const { data: res } = await this.$http.put('ad/discount', { discount: value })
+            if (res.meta.status !== 200) {
+              return this.$message.error(res.meta.msg)
+            }
+            this.$message.success(res.meta.msg)
+            this.getAdList()
+          }
+        })
+        .catch(() => {})
+    },
+    // 显示修改详情图对话框
+    showEditDetailDialog () {
+      for (let i = 0; i < this.adList.detail.length; i++) {
+        this.editDetailForm.detail.push({
+          name: '商品详情图片',
+          url: this.adList.detail[i]
+        })
+      }
+      this.editDetailDialogVisible = true
+    },
+    // 关闭编辑详情图
+    editDetailDialogClosed () {
+      this.editDetailForm.detail = []
+    },
+    // 上传详情图片成功
+    handleDetailSuccess (res, file) {
+      var temp = {
+        name: file.name,
+        url: res.data
+      }
+      this.editDetailForm.detail.push(temp)
+    },
+    // 删除详情图片
+    handleDetailRemove (file) {
+      for (let i = 0; i < this.editDetailForm.detail.length; i++) {
+        if (this.editDetailForm.detail[i].url === file.url) {
+          this.editDetailForm.detail.splice(i, 1)
+          break
+        }
+      }
+    },
+    editDetail () {
+      this.$refs.editDetailFormRef.validate(async valid => {
+        if (!valid) return
+
+        const { data: res } = await this.$http.put(
+          'ad/detail',
+          this.editDetailForm
+        )
+
+        if (res.meta.status !== 200) {
+          return this.$message.error(res.meta.msg)
+        }
+        this.$message.success(res.meta.msg)
+        this.getAdList()
+        this.editDetailDialogVisible = false
       })
     }
   }

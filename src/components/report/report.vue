@@ -23,8 +23,8 @@ export default {
     return {
       option: {
         title: {
-          text: '特性示例：渐变色 阴影 点击缩放',
-          subtext: 'Feature Sample: Gradient Color, Shadow, Click Zoom'
+          text: '各月份营业额',
+          subtext: 'Monthly turnover'
         },
         xAxis: {
           axisLabel: {
@@ -97,17 +97,22 @@ export default {
         ]
       },
       poption: {
+        title: {
+          text: '客户来源',
+          subtext: 'customers location'
+        },
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b}: {c} ({d}%)'
         },
         legend: {
           orient: 'vertical',
-          left: 10
+          left: 10,
+          top: 50
         },
         series: [
           {
-            name: '访问来源',
+            name: '客户来源',
             type: 'pie',
             radius: ['50%', '70%'],
             avoidLabelOverlap: false,
