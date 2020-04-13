@@ -6,7 +6,7 @@
     </el-header>
     <el-container>
       <el-aside :width="isCollapse ? '64px':'200px'">
-        <div :class="isCollapse ? 'el-icon-d-arrow-right toggle-button':'el-icon-d-arrow-left toggle-button'" @click="toggleCollapse"></div>
+        <div class="toggle-button" @click="toggleCollapse"></div>
         <!-- 侧边菜单 -->
         <el-menu
           background-color="#293a4a"
@@ -130,11 +130,8 @@ export default {
   height: 21px;
   line-height: 21px;
   background-color: #4a5064;
-  // font-size: 10px;
-  // line-height: 24px;
   color: #909399;
   text-align: center;
-  // letter-spacing: 0.2em;
   cursor: pointer;
 }
 .main{

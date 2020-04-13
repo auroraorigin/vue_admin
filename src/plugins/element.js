@@ -43,7 +43,10 @@ import {
   InputNumber,
   Carousel,
   CarouselItem,
-  DatePicker
+  DatePicker,
+  RadioGroup,
+  RadioButton,
+  Badge
 
 } from 'element-ui'
 
@@ -89,6 +92,9 @@ Vue.use(InputNumber)
 Vue.use(Carousel)
 Vue.use(CarouselItem)
 Vue.use(DatePicker)
+Vue.use(RadioGroup)
+Vue.use(RadioButton)
+Vue.use(Badge)
 
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm

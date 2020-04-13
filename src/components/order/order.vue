@@ -10,10 +10,21 @@
     <!-- 卡片 -->
     <el-card>
       <el-row>
-        <el-col :span="8">
+        <el-col :span="7">
           <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getOrderList()">
             <el-button slot="append" icon="el-icon-search" @click="getOrderList()"></el-button>
           </el-input>
+        </el-col>
+        <el-col :span="17">
+          <el-radio-group v-model="queryInfo.radio" style="margin-left:250px" @change="changeRadio">
+            <el-radio-button label="全部"></el-radio-button>
+            <el-radio-button label="待付款"></el-radio-button>
+            <el-radio-button label="待发货"></el-radio-button>
+            <el-radio-button label="待收货"></el-radio-button>
+            <el-radio-button label="交易成功"></el-radio-button>
+            <el-radio-button label="退款中"></el-radio-button>
+            <el-radio-button label="交易关闭"></el-radio-button>
+          </el-radio-group>
         </el-col>
       </el-row>
 
@@ -34,22 +45,28 @@
               <el-form-item label="详细地址">
                 <span>{{ scope.row.address.detail_address}}</span>
               </el-form-item>
-              <el-form-item label="快递编号">
-                <span v-if="scope.row.expressNumber">{{ scope.row.expressNumber}}</span>
-                <span v-else>无</span>
+              <el-form-item label="用户留言" v-if="scope.row.userWord!=='无'">
+                <span>{{scope.row.userWord}}</span>
+              </el-form-item>
+              <el-form-item label="快递编号" v-if="scope.row.expressNumber">
+                {{ scope.row.expressNumber}}
+              </el-form-item>
+              <el-form-item label="退款原因" v-if="scope.row.returnReason">
+                {{ scope.row.returnReason}}
               </el-form-item>
               <el-form-item label="合计金额">
-                <span>¥ {{scope.row.totalPrice}} = 商品价格:¥ {{Number(scope.row.totalPrice)+Number(scope.row.freight)+Number(scope.row.coupon)}} - 总运费:¥ {{ scope.row.freight}} - 优惠券:¥ {{scope.row.coupon}}</span>
+                <span v-if="scope.row.coupon">¥ {{scope.row.totalPrice}} = 商品价格:¥ {{Number(scope.row.totalPrice)+Number(scope.row.freight)+Number(scope.row.coupon.money[1])}} + 总运费:¥ {{ scope.row.freight}} - 优惠券:¥ {{scope.row.coupon.money[1]}}</span>
+                <span v-else>¥ {{scope.row.totalPrice}} = 商品价格:¥ {{Number(scope.row.totalPrice)+Number(scope.row.freight)}} - 总运费:¥ {{scope.row.freight}}</span>
               </el-form-item>
             </el-form>
 
             <el-table :data="scope.row.goods" border stripe>
               <el-table-column label="#" type="index"></el-table-column>
               <el-table-column label="商品名称" prop="name"></el-table-column>
-              <el-table-column label="规格属性" prop="specifiation"></el-table-column>
+              <el-table-column label="规格属性" prop="specification"></el-table-column>
               <el-table-column label="数量" prop="buyNumber"></el-table-column>
-              <el-table-column label="单价" prop="price"></el-table-column>
-              <el-table-column label="运费" prop="freight"></el-table-column>
+              <el-table-column label="单价" prop="unitPrice"></el-table-column>
+              <el-table-column label="运费" prop="goodPfreight"></el-table-column>
             </el-table>
           </template>
         </el-table-column>
@@ -57,7 +74,7 @@
         <el-table-column label="#" type="index"></el-table-column>
         <el-table-column label="订单编号" prop="_id"></el-table-column>
         <el-table-column label="用户编号" prop="openid"></el-table-column>
-        <el-table-column label="价格(元)" prop="totalPrice" width="110px"></el-table-column>
+        <el-table-column label="实付款(元)" prop="totalPrice" width="110px"></el-table-column>
         <el-table-column label="状态" width="110px">
           <template v-slot="scope">
             <el-tag v-if="scope.row.state=='待付款'">待付款</el-tag>
@@ -68,7 +85,7 @@
             <el-tag type="info" v-else-if="scope.row.state=='交易关闭'">交易关闭</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" prop="creatDate" width="150px"></el-table-column>
+        <el-table-column label="创建时间" prop="createDate" width="150px"></el-table-column>
         <el-table-column label="待处理订单" width="110px">
           <template v-slot="scope">
             <el-button
@@ -186,7 +203,8 @@ export default {
       queryInfo: {
         query: '',
         pagenum: 1,
-        pagesize: 10
+        pagesize: 10,
+        radio: '全部'
       },
       total: 0,
       orderlist: [],
@@ -323,6 +341,10 @@ export default {
         this.getOrderList()
         this.addressVisible = false
       })
+    },
+    changeRadio () {
+      this.queryInfo.pagenum = 1
+      this.getOrderList()
     }
   }
 }
