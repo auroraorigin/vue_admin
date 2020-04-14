@@ -151,7 +151,6 @@ export default {
     var temp = result
     var zoomSize = 6
     myChart.on('click', function (params) {
-      console.log(this.zoomSize)
       myChart.dispatchAction({
         type: 'dataZoom',
         startValue: temp.xAxis.data[Math.max(params.dataIndex - zoomSize / 2, 0)],

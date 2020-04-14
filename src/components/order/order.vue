@@ -15,8 +15,11 @@
             <el-button slot="append" icon="el-icon-search" @click="getOrderList()"></el-button>
           </el-input>
         </el-col>
-        <el-col :span="17">
-          <el-radio-group v-model="queryInfo.radio" style="margin-left:250px" @change="changeRadio">
+        <el-col :span="3" >
+          <el-button icon="el-icon-refresh" style="margin-left:100px;width:60px;" @click="refresh"></el-button>
+        </el-col>
+        <el-col :span="14">
+          <el-radio-group v-model="queryInfo.radio" style="margin-left:100px" @change="changeRadio">
             <el-radio-button label="全部"></el-radio-button>
             <el-radio-button label="待付款"></el-radio-button>
             <el-radio-button label="待发货"></el-radio-button>
@@ -55,8 +58,8 @@
                 {{ scope.row.returnReason}}
               </el-form-item>
               <el-form-item label="合计金额">
-                <span v-if="scope.row.coupon">¥ {{scope.row.totalPrice}} = 商品价格:¥ {{Number(scope.row.totalPrice)+Number(scope.row.freight)+Number(scope.row.coupon.money[1])}} + 总运费:¥ {{ scope.row.freight}} - 优惠券:¥ {{scope.row.coupon.money[1]}}</span>
-                <span v-else>¥ {{scope.row.totalPrice}} = 商品价格:¥ {{Number(scope.row.totalPrice)+Number(scope.row.freight)}} - 总运费:¥ {{scope.row.freight}}</span>
+                <span v-if="scope.row.coupon">¥ {{scope.row.havedPaid}} = 商品价格:¥ {{Number(scope.row.totalPrice)}} + 总运费:¥ {{ scope.row.freight}} - 优惠券:¥ {{scope.row.coupon.money[1]}}</span>
+                <span v-else>¥ {{scope.row.havedPaid}} = 商品价格:¥ {{Number(scope.row.totalPrice)}} + 总运费:¥ {{scope.row.freight}}</span>
               </el-form-item>
             </el-form>
 
@@ -66,7 +69,7 @@
               <el-table-column label="规格属性" prop="specification"></el-table-column>
               <el-table-column label="数量" prop="buyNumber"></el-table-column>
               <el-table-column label="单价" prop="unitPrice"></el-table-column>
-              <el-table-column label="运费" prop="goodPfreight"></el-table-column>
+              <el-table-column label="运费" prop="freight"></el-table-column>
             </el-table>
           </template>
         </el-table-column>
@@ -74,7 +77,7 @@
         <el-table-column label="#" type="index"></el-table-column>
         <el-table-column label="订单编号" prop="_id"></el-table-column>
         <el-table-column label="用户编号" prop="openid"></el-table-column>
-        <el-table-column label="实付款(元)" prop="totalPrice" width="110px"></el-table-column>
+        <el-table-column label="实付款(元)" prop="havedPaid" width="110px"></el-table-column>
         <el-table-column label="状态" width="110px">
           <template v-slot="scope">
             <el-tag v-if="scope.row.state=='待付款'">待付款</el-tag>
@@ -344,6 +347,9 @@ export default {
     },
     changeRadio () {
       this.queryInfo.pagenum = 1
+      this.getOrderList()
+    },
+    refresh () {
       this.getOrderList()
     }
   }

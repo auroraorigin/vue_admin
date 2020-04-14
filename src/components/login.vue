@@ -75,7 +75,6 @@ export default {
           return
         }
         const { data: res } = await this.$http.post('login', this.loginForm)
-        console.log(res)
         if (res.meta.status !== 200) {
           return this.$message.error(res.meta.msg)
         }
