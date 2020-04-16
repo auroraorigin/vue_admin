@@ -72,7 +72,7 @@
             <el-switch v-model="scope.row.state" @change="goodsStateChanged(scope.row)"></el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="172px">
+        <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
             <el-button
               type="primary"

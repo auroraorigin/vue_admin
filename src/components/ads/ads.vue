@@ -209,7 +209,7 @@
           <el-button type="primary" size="mini" @click="addNotice">添加公告</el-button>
           <el-table :data="editNoticeForm.notice" border stripe>
             <el-table-column label="信息" prop="name"></el-table-column>
-            <el-table-column label="操作" width="118px">
+            <el-table-column label="操作" width="120px">
               <template slot-scope="scope">
                 <el-button
                   type="primary"

@@ -120,9 +120,11 @@
     >
       <el-row>
         <p>当前管理员：{{adminInfo.name}}</p>
+        <br/>
       </el-row>
       <el-row>
         <p>当前角色：{{adminInfo.role.name}}</p>
+        <br/>
       </el-row>
       <el-row>
         <p>
