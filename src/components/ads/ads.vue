@@ -20,7 +20,7 @@
                   </el-carousel-item>
                 </el-carousel>
 
-                <el-carousel height="50px" class="notice" autoplay direction="vertical">
+                <el-carousel height="20px" class="notice" autoplay direction="vertical">
                   <el-carousel-item v-for="item in adList.notice" :key="item.id">
                     <p class="noticep">{{item.name}}</p>
                   </el-carousel-item>

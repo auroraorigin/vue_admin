@@ -11,7 +11,7 @@ import NProgress from 'nprogress'
 Vue.config.productionTip = false
 
 // 配置请求根路径
-axios.defaults.baseURL = 'http://127.0.0.1:8888/admin/'
+axios.defaults.baseURL = 'http://60.205.155.43:8888/admin/'
 
 // 发起axios请求
 axios.interceptors.request.use(config => {

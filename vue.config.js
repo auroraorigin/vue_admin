@@ -1,4 +1,13 @@
 module.exports = {
+  pwa: {
+    iconPaths: {
+      favicon32: 'favicon.ico',
+      favicon16: 'favicon.ico',
+      appleTouchIcon: 'favicon.ico',
+      maskIcon: 'favicon.ico',
+      msTileImage: 'favicon.ico'
+    }
+  },
   chainWebpack: config => {
     config.when(process.env.NODE_ENV === 'development', config => {
       config.entry('app').clear().add('./src/main-dev.js')
@@ -28,17 +37,5 @@ module.exports = {
         return args
       })
     })
-  },
-  pluginOptions: {
-    pwa: {
-      iconPaths: {
-        favicon32: './favicon.ico',
-        favicon16: './favicon.ico',
-        appleTouchIcon: './favicon.ico',
-        maskIcon: './favicon.ico',
-        msTileImage: './favicon.ico'
-      }
-
-    }
   }
 }
