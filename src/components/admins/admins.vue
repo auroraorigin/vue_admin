@@ -11,7 +11,7 @@
       <!-- 搜索与添加 -->
       <el-row :gutter="20">
         <el-col :span="7">
-          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getAdminList">
+          <el-input placeholder="请输入内容" v-model.trim="queryInfo.query" clearable @clear="getAdminList">
             <el-button slot="append" icon="el-icon-search" @click="getAdminList"></el-button>
           </el-input>
         </el-col>

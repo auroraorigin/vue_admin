@@ -11,7 +11,7 @@
       <!-- 搜索添加 -->
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-input placeholder="请输入内容" v-model="queryInfo.query" clearable @clear="getGoodsList">
+          <el-input placeholder="请输入内容" v-model.trim="queryInfo.query" clearable @clear="getGoodsList">
             <el-button slot="append" icon="el-icon-search" @click="getGoodsList"></el-button>
           </el-input>
         </el-col>
@@ -101,7 +101,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="queryInfo.pagenum"
-        :page-sizes="[5, 10, 15, 20]"
+        :page-sizes="[3, 5, 10, 15]"
         :page-size="queryInfo.pagesize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -311,7 +311,7 @@ export default {
       },
       cateList: [],
       editDialogVisible1: false,
-      uploadURL: 'http://127.0.0.1:8888/admin/upload',
+      uploadURL: this.$http.defaults.baseURL + 'upload',
       headerObj: {
         Authorization: window.sessionStorage.getItem('token')
       },

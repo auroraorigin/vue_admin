@@ -4,7 +4,7 @@
       <div>后台管理系统</div>
       <el-button class="btn" type="info" @click="logout" round>退出</el-button>
     </el-header>
-    <el-container>
+    <el-container class="mid-container">
       <el-aside :width="isCollapse ? '64px':'200px'">
         <div class="toggle-button" @click="toggleCollapse"></div>
         <!-- 侧边菜单 -->
@@ -100,6 +100,9 @@ export default {
 .home-container {
   height: 100%;
 }
+.mid-container{
+  height: calc(100% - 60px)
+}
 .el-header {
   background-color: rgb(32, 54, 75);
   display: flex;
@@ -135,7 +138,7 @@ export default {
   cursor: pointer;
 }
 .main{
-  height: 690px;
+  height: 100%
 }
 .el-submenu span{
     font-size: 13px;

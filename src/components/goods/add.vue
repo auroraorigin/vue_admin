@@ -199,7 +199,7 @@ export default {
           { required: true, message: '请上传商品详情图', trigger: 'blur' }
         ]
       },
-      uploadURL: 'http://127.0.0.1:8888/admin/upload',
+      uploadURL: this.$http.defaults.baseURL + 'upload',
       headerObj: {
         Authorization: window.sessionStorage.getItem('token')
       },

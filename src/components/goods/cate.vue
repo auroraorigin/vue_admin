@@ -149,7 +149,7 @@ export default {
         name: '',
         url: ''
       },
-      uploadURL: 'http://127.0.0.1:8888/admin/upload',
+      uploadURL: this.$http.defaults.baseURL + 'upload',
       headerObj: {
         Authorization: window.sessionStorage.getItem('token')
       },
