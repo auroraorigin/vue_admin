@@ -453,6 +453,13 @@ export default {
 
       if (confirmResult !== 'confirm') return this.$message.info('已取消删除')
 
+      for (let i = 0; i < this.goodslist.length; i++) {
+        if (this.goodslist[i]._id === _id) {
+          if (this.goodslist[i].specification.length === 1) { return this.$message.error('规格不能为空') }
+          break
+        }
+      }
+
       const { data: res } = await this.$http.delete(
         `/goods/${_id}/specification/${sId}`
       )
