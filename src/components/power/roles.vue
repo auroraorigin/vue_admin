@@ -241,6 +241,13 @@ export default {
       this.rightslist = res.data
 
       this.getLeafKeys(role, this.defKeys)
+
+      for (let i = 0; i < role.children.length; i++) {
+        if (role.children[i]._id === '5e955870c591943d2cd8577c') {
+          this.defKeys.push('5e955870c591943d2cd8577c')
+          break
+        }
+      }
       this.setRightdialogVisible = true
     },
     // 递归获取三级权限ID

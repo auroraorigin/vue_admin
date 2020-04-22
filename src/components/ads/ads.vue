@@ -410,7 +410,7 @@
         <el-form-item label="数量" prop="number">
           <el-input-number v-model="addCouponForm.number" :step="1" :max="9999" :min="0"></el-input-number>
         </el-form-item>
-        <el-form-item prop="effective" label="起始日期">
+        <el-form-item prop="effective" label="有效日期">
               <el-date-picker
                 v-model="addCouponForm.effective"
                 type="daterange"
@@ -532,7 +532,7 @@ export default {
           { required: true, message: '请输入优惠券数量', trigger: 'blur' }
         ],
         effective: [
-          { required: true, message: '请完善优惠券起始日期', trigger: 'blur' }
+          { required: true, message: '请完善优惠券有效日期', trigger: 'blur' }
         ]
       },
       pickerOptions: {
@@ -1063,7 +1063,7 @@ export default {
           if (discount === 0 || isNaN(discount)) {
             this.$message({
               type: 'error',
-              message: '修改失败'
+              message: '请输入正确的商品免邮金额'
             })
           } else {
             const { data: res } = await this.$http.put('ad/discount', { discount: value })
