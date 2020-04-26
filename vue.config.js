@@ -1,11 +1,11 @@
 module.exports = {
   pwa: {
     iconPaths: {
-      favicon32: 'favicon.ico',
-      favicon16: 'favicon.ico',
-      appleTouchIcon: 'favicon.ico',
-      maskIcon: 'favicon.ico',
-      msTileImage: 'favicon.ico'
+      favicon32: 'favion.ico',
+      favicon16: 'favion.ico',
+      appleTouchIcon: 'favion.ico',
+      maskIcon: 'favion.ico',
+      msTileImage: 'favion.ico'
     }
   },
   chainWebpack: config => {
