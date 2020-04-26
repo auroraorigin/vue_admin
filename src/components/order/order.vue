@@ -108,7 +108,7 @@
         <el-table-column label="操作" width="120px">
           <template v-slot="scope">
             <el-button type="primary" icon="el-icon-edit" size="mini" @click="showBox(scope.row)"></el-button>
-            <el-button
+            <el-button v-if="scope.row.expressNumber"
               type="warning"
               icon="el-icon-location"
               size="mini"
@@ -287,11 +287,10 @@ export default {
       this.$refs.addressFormRef.resetFields()
     },
     async showProgressBox (info) {
-      // info.expressNumber
       const { data: res } = await this.$http.get(
-        'orders/804909574412544580/kuaidi'
+        `orders/${info.expressNumber}/kuaidi`
       )
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      if (res.meta.status !== 200) return this.$message.error(res.meta.message)
       this.progressInfo = res.data
       this.progressVisible = true
     },
